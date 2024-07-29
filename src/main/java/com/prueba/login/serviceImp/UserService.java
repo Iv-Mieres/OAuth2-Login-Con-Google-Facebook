@@ -36,7 +36,7 @@ public class UserService implements ICustomerUserService {
 
 
     /**
-     * Guardar datos de Usuario de Google o Facebook
+     * Guarda datos de Usuario de Google o Facebook
      *
      * @param oAuth2User datos de usuario OAuth2
      * @param provider  nombre del cliente : google o facebook
@@ -61,7 +61,7 @@ public class UserService implements ICustomerUserService {
     }
 
     /**
-     * Guardar datos del formulario de registro de usuarios
+     * Guarda datos del formulario de registro de usuarios
      *
      * @param user datos del usuario registrado
      * @exception UnconfirmedPasswordException confirmación de password incorrecta
@@ -75,11 +75,26 @@ public class UserService implements ICustomerUserService {
         return this.convertToCustomerUserDtoRes(userDb);
     }
 
+    /**
+     * Muestra usuario por Id
+     *
+     * @param id id de usuario registrado
+     * @exception UserIdNotFoundException usuario no encotrado
+     * @return CustomerUserDtoRes
+     */
     @Override
     public CustomerUserDtoRes getUserById(Long id) {
         return this.convertToCustomerUserDtoRes(this.getEntityById(id));
     }
 
+
+    /**
+     * Muestra usuario autenticado
+     *
+     * @param email username del usuario autenticado
+     * @exception UserIdNotFoundException usuario no encotrado
+     * @return CustomerUserDtoRes
+     */
     @Override
     public CustomerUserDtoRes getUserAuthenticated(String email) {
         var userDb = userRepository.findByEmail(email)
@@ -87,6 +102,13 @@ public class UserService implements ICustomerUserService {
         return this.convertToCustomerUserDtoRes(userDb);
     }
 
+
+    /**
+     * Muestra todos los usuarios paginados
+     *
+     * @param pageable datos de paginación
+     * @return Page
+     */
     @Override
     public Page<CustomerUserDtoRes> getAllUsers(Pageable pageable) {
         var usersDb = userRepository.findAll(pageable);
@@ -98,6 +120,14 @@ public class UserService implements ICustomerUserService {
         return new PageImpl<>(usersDTO, pageable, usersDb.getTotalElements());
     }
 
+    /**
+     * Actualiza datos de usuario
+     *
+     * @param user datos del usuario actualizados
+     * @param id id del usuario a actualizar
+     * @exception EmailExistsException email ya registrado por otro usuario
+     * @return CustomerUserDtoRes
+     */
     @Override
     public CustomerUserDtoRes updateUserById(CustomerUserDtoReq user, Long id) {
         var userDb = this.getEntityById(id);
@@ -111,6 +141,12 @@ public class UserService implements ICustomerUserService {
         return this.convertToCustomerUserDtoRes(userRepository.save(userDb));
     }
 
+    /**
+     * Elimina lógico de usuario registrado
+     *
+     * @param id id del usuario a eliminar
+     * @exception UserIdNotFoundException id de usuario no encontrado
+     */
     @Override
     public void deleteUserById(Long id) {
        var userDb = this.getEntityById(id);
@@ -119,6 +155,15 @@ public class UserService implements ICustomerUserService {
     }
 
 
+    /**
+     * Guarda datos de la cuenta social autenticada
+     *
+     * @param oAuth2User datos del usuario actualizados
+     * @param provider nombre de cliente: google o facebook
+     * @param socialId id de la cuenta social del usuario logueado
+     * @exception RoleNameNotFoundException el rolename no se encuentra registrado
+     * @return CustomerUser
+     */
     private CustomerUser saveSocialUser(OAuth2User oAuth2User, String provider, String socialId) {
         var userDb = userRepository.findByEmail(oAuth2User.getAttribute("email"));
 
@@ -142,12 +187,25 @@ public class UserService implements ICustomerUserService {
         }
     }
 
+    /**
+     * Muestra usuario por id
+     *
+     * @param id id del usuario
+     * @exception UserIdNotFoundException usuario no registrado
+     * @return CustomerUser
+     */
     private CustomerUser getEntityById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserIdNotFoundException("El id: " + id + " no se encuentra registrado."));
     }
 
-
+    /**
+     * Convierte un UserDTO a una Entity
+     *
+     * @param user datos del DTO a convertir
+     * @exception RoleNameNotFoundException el rolename no se encuentra registrado
+     * @return CustomerUser
+     */
     private CustomerUser convertToCustomerUserDtoReq(CustomerUserDtoReq user) {
         return CustomerUser.builder()
                 .email(user.email())
@@ -159,10 +217,25 @@ public class UserService implements ICustomerUserService {
                 .build();
     }
 
+    /**
+     * Convierte una Entity a un UserDTO
+     *
+     * @param user datos de la Entity a convertir
+     * @return CustomerUserDtoRes
+     */
     private CustomerUserDtoRes convertToCustomerUserDtoRes(CustomerUser user) {
         return new CustomerUserDtoRes(user.getId(), user.getEmail(), user.getName(), user.getPicture());
     }
 
+    /**
+     * Valida email y password al registrar un usuario
+     *
+     * @param password contraseña de usuario
+     * @param repeatPassword contraseña de confirmación
+     * @param email username de usuario
+     * @exception EmailExistsException email no disponible: registrado por otro usuario
+     * @exception UnconfirmedPasswordException las contraseñas ingresadas no coinciden
+     */
     private void validatePasswordAndUserEmail(String password, String repeatPassword, String email) {
         if (userRepository.existsByEmail(email)) {
             throw new EmailExistsException("El email " + email + " Ya se encuentra registrado. Ingrese un nuevo email.");
