@@ -38,7 +38,7 @@ jobs:
         push: true
         tags: roninx84/login_oauth2:0.0.1
 
-    - name: Remove Files on Server
+    - name: Deploy Docker Compose
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
@@ -52,14 +52,5 @@ jobs:
           else
             echo "No containers are currently running."
           fi
-
-    - name: Deploy Docker Compose
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        script: |
-          cd /home
           docker-compose up --build -d
 
