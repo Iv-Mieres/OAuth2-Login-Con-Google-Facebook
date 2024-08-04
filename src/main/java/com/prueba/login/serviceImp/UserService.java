@@ -10,7 +10,6 @@ import com.prueba.login.modelExceptions.UserIdNotFoundException;
 import com.prueba.login.repository.ICustomerUserRepository;
 import com.prueba.login.repository.IRoleRepository;
 import com.prueba.login.service.ICustomerUserService;
-import com.prueba.login.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,8 +30,6 @@ public class UserService implements ICustomerUserService {
     private IRoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JWTUtils jwtUtils;
 
 
     /**
