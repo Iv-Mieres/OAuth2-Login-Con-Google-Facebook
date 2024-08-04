@@ -38,19 +38,14 @@ jobs:
         push: true
         tags: roninx84/login_oauth2:0.0.1
 
-    - name: Start SSH Agent and add key
-      uses: webfactory/ssh-agent@v0.5.3
+    - name: Remove Files on Server
+      uses: appleboy/ssh-action@master
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        ssh_passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        
-    - name: Deploy to Server    
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add - > /dev/null
-        ssh-add - <<< "${{ secrets.SSH_PASSPHRASE }}" || true
-        ssh -o StrictHostKeyChecking=no root@200.45.208.169 << 'EOF'
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
           cd /home
-
           if [ "$(docker ps -q)" ]; then
             echo "Stopping and removing running containers..."
             docker-compose down
@@ -58,6 +53,13 @@ jobs:
             echo "No containers are currently running."
           fi
 
+    - name: Deploy Docker Compose
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        script: |
+          cd /home
           docker-compose up --build -d
-        EOF
 
