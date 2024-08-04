@@ -10,6 +10,9 @@ spring:
       ddl-auto: update
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQLDialect
+      jakarta.persistence.jdbc.url: ${DB_URL}
+      jakarta.persistence.jdbc.user: ${DB_USER}
+      jakarta.persistence.jdbc.password: ${DB_PASSWORD}
 
   security:
     oauth2:
