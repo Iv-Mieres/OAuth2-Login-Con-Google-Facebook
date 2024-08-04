@@ -42,9 +42,12 @@ jobs:
       uses: webfactory/ssh-agent@v0.5.3
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
+        ssh_passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        
     - name: Deploy to Server    
       run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add - > /dev/null
+        ssh-add - <<< "${{ secrets.SSH_PASSPHRASE }}" || true
         ssh -o StrictHostKeyChecking=no root@200.45.208.169 << 'EOF'
           cd /home
 
