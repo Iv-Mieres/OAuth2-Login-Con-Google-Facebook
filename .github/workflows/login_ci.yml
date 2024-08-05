@@ -53,6 +53,8 @@ jobs:
           if [ -n "$RUNNING_CONTAINERS" ]; then
             echo "Stopping and removing running containers..."
             docker-compose down
+            echo "Removing Docker image..."
+            docker rmi -f roninx84/login_oauth2:0.0.1
           else
             echo "No containers are currently running."
           fi
