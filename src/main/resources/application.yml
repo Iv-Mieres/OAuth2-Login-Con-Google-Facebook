@@ -23,7 +23,7 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET}
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
-            redirect-uri: http://vps-4288504-x.dattaweb.com/login/oauth2/code/google
+            redirect-uri: http://vps-4288504-x.dattaweb.com:8080/login/oauth2/code/google
           facebook:
             client-id: ${FACEBOOK_CLIENT_ID}
             client-secret: ${FACEBOOK_CLIENT_SECRET}
