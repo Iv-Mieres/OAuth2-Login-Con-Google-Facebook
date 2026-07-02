@@ -3,17 +3,24 @@ package com.prueba.login.controller;
 import com.prueba.login.dto.request.CustomerUserDtoReq;
 import com.prueba.login.dto.response.CustomerUserDtoRes;
 import com.prueba.login.service.ICustomerUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
-    @Autowired
-    private ICustomerUserService userService;
+    private final ICustomerUserService userService;
+
+    public UserController(ICustomerUserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<CustomerUserDtoRes> registerUser(@RequestBody CustomerUserDtoReq userDtoReq){

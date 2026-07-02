@@ -10,7 +10,6 @@ import com.prueba.login.modelExceptions.UserIdNotFoundException;
 import com.prueba.login.repository.ICustomerUserRepository;
 import com.prueba.login.repository.IRoleRepository;
 import com.prueba.login.service.ICustomerUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,12 +23,18 @@ import java.util.Set;
 @Service
 public class UserService implements ICustomerUserService {
 
-    @Autowired
-    private ICustomerUserRepository userRepository;
-    @Autowired
-    private IRoleRepository roleRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final ICustomerUserRepository userRepository;
+    private final IRoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+
+    public UserService(ICustomerUserRepository userRepository, 
+                       IRoleRepository roleRepository, 
+                       PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
     /**
@@ -44,17 +49,17 @@ public class UserService implements ICustomerUserService {
     @Override
     public CustomerUser saveOAuth2User(OAuth2User oAuth2User, String provider) {
         String socialId;
-        switch (provider) {
+        return switch (provider) {
             case "google" -> {
                 socialId = "sub";
-                return this.saveSocialUser(oAuth2User, provider, socialId);
+                yield this.saveSocialUser(oAuth2User, provider, socialId);
             }
             case "facebook" -> {
                 socialId = "id";
-                return this.saveSocialUser(oAuth2User, provider, socialId);
+                yield this.saveSocialUser(oAuth2User, provider, socialId);
             }
             default -> throw new RuntimeException("Usuario de Google o Facebook invalido.");
-        }
+        };
     }
 
     /**
@@ -101,7 +106,7 @@ public class UserService implements ICustomerUserService {
         if (!user.email().equals(userDb.getEmail()) && userRepository.existsByEmail(user.email())) {
             throw new EmailExistsException("El Email " + user.email() + " ya se encuentra registrado");
         }
-        userDb.setName(user.name() + " " + user);
+        userDb.setName(user.name() + " " + user.surname());
         userDb.setEmail(user.email());
         userDb.setPicture(user.picture());
 
@@ -168,6 +173,7 @@ public class UserService implements ICustomerUserService {
             throw new UnconfirmedPasswordException("las contraseñas ingresadas deben coincidir.");
         }
     }
+
 
 
 }
