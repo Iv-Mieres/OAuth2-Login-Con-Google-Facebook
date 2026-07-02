@@ -5,21 +5,28 @@ import com.prueba.login.dto.response.AuthResponseDto;
 import com.prueba.login.service.IOAuth2LoadUserService;
 import com.prueba.login.serviceImp.UserDetailsServiceImp;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
 public class AuthenticationController {
 
-    @Autowired
-    private UserDetailsServiceImp userDetailsServiceImp;
-    @Autowired
-    private IOAuth2LoadUserService oAuth2LoadUserService;
+    private final UserDetailsServiceImp userDetailsServiceImp;
+    private final IOAuth2LoadUserService oAuth2LoadUserService;
+
+    public AuthenticationController(UserDetailsServiceImp userDetailsServiceImp,
+                                    IOAuth2LoadUserService oAuth2LoadUserService) {
+        this.userDetailsServiceImp = userDetailsServiceImp;
+        this.oAuth2LoadUserService = oAuth2LoadUserService;
+    }
 
     @PostMapping()
     public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid AuthLoginDtoReq authLoginDtoReq) {

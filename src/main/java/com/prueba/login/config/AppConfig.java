@@ -2,7 +2,6 @@ package com.prueba.login.config;
 
 
 import com.prueba.login.repository.ICustomerUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,8 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class AppConfig {
 
-    @Autowired
-    private ICustomerUserRepository userRepository;
+    private final ICustomerUserRepository userRepository;
+
+    public AppConfig(ICustomerUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Metodo que configura el bean encriptador de contraseña

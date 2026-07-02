@@ -4,7 +4,6 @@ import com.prueba.login.config.filter.JwtTokenValidator;
 import com.prueba.login.serviceImp.OAuth2LoadUserService;
 import com.prueba.login.utils.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,14 +23,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class CustomSecurityFilterChain {
 
-    @Autowired
-    private JWTUtils jwtUtils;
-    @Autowired
-    private OAuth2LoadUserService customOAuth2UserService;
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
+    private final JWTUtils jwtUtils;
+    private final OAuth2LoadUserService customOAuth2UserService;
+    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final OAuth2AuthorizedClientService authorizedClientService;
+
+
+    public CustomSecurityFilterChain(JWTUtils jwtUtils, 
+                                     OAuth2LoadUserService customOAuth2UserService,
+                                     ClientRegistrationRepository clientRegistrationRepository,
+                                     OAuth2AuthorizedClientService authorizedClientService) {
+        this.jwtUtils = jwtUtils;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.clientRegistrationRepository = clientRegistrationRepository;
+        this.authorizedClientService = authorizedClientService;
+    }
 
 
     /**
