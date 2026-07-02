@@ -1,21 +1,18 @@
 package com.prueba.login.user.api.dto.response;
 
-import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
- * DTO para la respuesta de datos de usuario.
+ * Respuesta con datos de usuario.
  */
 public record UserResponse(
     Long id,
+    String username,
     String email,
-    String name,
-    String surname,
-    String picture,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    Boolean enabled,
+    Set<String> roles,
+    Set<String> permissions,
+    String authProvider,
+    String providerId
 ) {
-    // Constructor simplificado sin timestamps para compatibilidad
-    public UserResponse(Long id, String email, String name, String surname, String picture) {
-        this(id, email, name, surname, picture, null, null);
-    }
 }

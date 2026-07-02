@@ -25,8 +25,9 @@ spring:
           facebook:
             client-id: test-fb-client-id
             client-secret: test-fb-client-secret
+
+# JWT configuration for tests
+app:
   jwt:
-    private:
-      key: test-private-key
-    user:
-      generator: test-user-generator
+    secret: test-jwt-secret-key-for-testing-purposes-only-must-be-long-enough
+    expiration: 3600000
